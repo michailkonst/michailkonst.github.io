@@ -1,0 +1,115 @@
+<!doctype html><html lang=en-au><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1"><meta property="og:site_name" content="Michail Konst"><meta property="og:type" content="article"><meta property="og:image" content="https://www.michailkonst.com//img/home.jpg"><meta property="twitter:image" content="https://www.michailkonst.com//img/home.jpg"><meta name=title content="Parallel Foreach With Ordered Output Using Arrays"><meta property="og:title" content="Parallel Foreach With Ordered Output Using Arrays"><meta property="twitter:title" content="Parallel Foreach With Ordered Output Using Arrays"><meta name=description content><meta property="og:description" content><meta property="twitter:description" content><meta property="og:url" content="https://www.michailkonst.com/blog/parallel-foreach-with-ordered-output-using-arrays/"><meta property="twitter:card" content="When processing data in parallel with the Task Parallel Library, maintaining the order of results can be tricky. This post demonstrates how to process a collection concurrently while ensuring the output preserves the same order as the input without resorting to extra identifiers or temporary fields."><meta name=keyword content><link rel="shortcut icon" href=/img/favicon.ico><title>Parallel Foreach With Ordered Output Using Arrays | </title><link rel=canonical href=/blog/parallel-foreach-with-ordered-output-using-arrays/><link rel=stylesheet href=/css/bootstrap.min.css><link rel=stylesheet href=/css/hugo-theme-cleanwhite.min.css><link rel=stylesheet href=/css/zanshang.min.css><link rel=stylesheet href=/css/font-awesome.all.min.css><link rel=stylesheet href=https://www.michailkonst.com/css/custom.css><script src=/js/jquery.min.js></script><script src=/js/bootstrap.min.js></script><script src=/js/hux-blog.min.js></script><script src=/js/lazysizes.min.js></script></head><nav class="navbar navbar-default navbar-custom navbar-fixed-top"><div class=container-fluid><div class="navbar-header page-scroll"><button type=button class=navbar-toggle>
+<span class=sr-only>Toggle navigation</span>
+<span class=icon-bar></span>
+<span class=icon-bar></span>
+<span class=icon-bar></span>
+</button>
+<a class=navbar-brand href=/>Michail Konst</a></div><div id=huxblog_navbar><div class=navbar-collapse><ul class="nav navbar-nav navbar-right"><li><a href=/>All Posts</a></li><li><a href=/about//>ABOUT</a></li><li><a href=/search><i class="fa fa-search"></i></a></li></ul></div></div></div></nav><script>var $body=document.body,$toggle=document.querySelector(".navbar-toggle"),$navbar=document.querySelector("#huxblog_navbar"),$collapse=document.querySelector(".navbar-collapse");$toggle.addEventListener("click",handleMagic);function handleMagic(){$navbar.className.indexOf("in")>0?($navbar.className=" ",setTimeout(function(){$navbar.className.indexOf("in")<0&&($collapse.style.height="0px")},400)):($collapse.style.height="auto",$navbar.className+=" in")}</script><style type=text/css>header.intro-header{background-image:url(/img/home.jpg)}</style><header class=intro-header><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><div class=post-heading><div class=tags></div><h1>Parallel Foreach With Ordered Output Using Arrays</h1><h2 class=subheading></h2><span class=meta>Posted by
+Michail Konst
+on
+Friday, August 1, 2014</span></div></div></div></div></header><article><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2
+col-md-10 col-md-offset-1
+post-container"><p>One of the problems I&rsquo;ve recently had was to process a collection of data and return the outcome of each processing in another collection. To utilise the multiple and/or hyper threaded cores of the machine that executes the processing, I&rsquo;ve used the Task Parallel Library.</p><p>The problem is that the output collection had to be ordered, i.e. each element of the collection had to correspond to the same order as the element in the input collection that it came from. A scenario for this is where we need to run a batch operation and need to match the output elements to each input element, such as updating multiple prices in a catalogue of products. One other way of matching input and output would be to assign identifiers to each element but I&rsquo;ve decided against adding two temporary fields for an operation that could just be resolved with ordering.</p><p>Prototype:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-csharp data-lang=csharp><span style=display:flex><span><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>ParallelNumberIncrementor</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>   <span style=color:#66d9ef>internal</span> <span style=color:#66d9ef>int</span>[] Increment(<span style=color:#66d9ef>int</span>[] input)
+</span></span><span style=display:flex><span>   {
+</span></span><span style=display:flex><span>      <span style=color:#66d9ef>int</span>[] output = <span style=color:#66d9ef>new</span> <span style=color:#66d9ef>int</span>[input.Length];
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>      Parallel.ForEach(input, (i, state, index) =&gt;
+</span></span><span style=display:flex><span>      {
+</span></span><span style=display:flex><span>         output[index] = i + <span style=color:#ae81ff>1</span>;
+</span></span><span style=display:flex><span>      });
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>      <span style=color:#66d9ef>return</span> output;
+</span></span><span style=display:flex><span>   }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>That&rsquo;s what it is in its simplest form. Arrays are not thread safe but in this instance a thread accesses an array position only once. We&rsquo;re using the overload of <code>Parallel.ForEach</code> that gives us access to the index of the element being processed in each iteration.</p><p>In order to provide live documentation and also to test that our logic does what it&rsquo;s meant to do, we can unit test this. We should remove the Parallel static from the <code>ParallelNumberIncrementor</code> because we&rsquo;re not testing the Task Parallel Library but only our own logic. So let&rsquo;s isolate the TPL functionality.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-csharp data-lang=csharp><span style=display:flex><span><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>interface</span> <span style=color:#a6e22e>IParallelLooper</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>   ParallelLoopResult ForEach&lt;TSource&gt;(IEnumerable&lt;TSource&gt; source, Action&lt;TSource, ParallelLoopState, <span style=color:#66d9ef>long</span>&gt; body);
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>This interface copies the Parallel.ForEach method signature for this example. You can add its overloads into it as per your needs.</p><p>The implementing class:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-csharp data-lang=csharp><span style=display:flex><span><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>ParallelLooper</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>   ParallelLoopResult ForEach&lt;TSource&gt;(IEnumerable&lt;TSource&gt; source, Action&lt;TSource, ParallelLoopState, <span style=color:#66d9ef>long</span>&gt; body)
+</span></span><span style=display:flex><span>   {
+</span></span><span style=display:flex><span>       <span style=color:#66d9ef>return</span> Parallel.ForEach(source, body);
+</span></span><span style=display:flex><span>   }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>So now let&rsquo;s implement a <code>ParallelNumberIncrementor</code> which is decoupled from the TPL. The logic to test is that even though each iteration can finish at different times on each execution of the loop, the end array will have its elements in the same order as the corresponding elements of the input array.</p><p>Let&rsquo;s start by writing our first test for this.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-csharp data-lang=csharp><span style=display:flex><span><span style=color:#a6e22e>[Test]</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>void</span> Increment_WhenElementProcessingFinishesInOrder_OutputElementsAppearInOrder()
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>     <span style=color:#66d9ef>var</span> parallelNumberIncrementor = <span style=color:#66d9ef>new</span> ParallelNumberIncrementor();
+</span></span><span style=display:flex><span>     <span style=color:#66d9ef>var</span> input = <span style=color:#66d9ef>new</span>[]{ <span style=color:#ae81ff>1</span>, <span style=color:#ae81ff>2</span>, <span style=color:#ae81ff>3</span> };
+</span></span><span style=display:flex><span>     <span style=color:#66d9ef>var</span> output = parallelNumberIncrementor.Increment(input);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>     Assert.AreEqual(<span style=color:#66d9ef>new</span>[] { <span style=color:#ae81ff>2</span>, <span style=color:#ae81ff>3</span>, <span style=color:#ae81ff>4</span> }, output);
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>Getting it to pass:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-csharp data-lang=csharp><span style=display:flex><span><span style=color:#66d9ef>public</span> IEnumerable&lt;<span style=color:#66d9ef>int</span>&gt; Increment(<span style=color:#66d9ef>int</span>[] input)
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>foreach</span> (<span style=color:#66d9ef>var</span> i <span style=color:#66d9ef>in</span> input)
+</span></span><span style=display:flex><span>       <span style=color:#66d9ef>yield</span> <span style=color:#66d9ef>return</span> i + <span style=color:#ae81ff>1</span>;
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>Ok, nothing fancy here. Also, we want the incrementing operations to happen in parallel iterations and this isn&rsquo;t happening yet. If we could get an IParallelLooper involved that will make a case for parallelism.</p><p>Let&rsquo;s re-think the ParallelNumberIncrementor:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-csharp data-lang=csharp><span style=display:flex><span><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>ParallelNumberIncrementor</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>   <span style=color:#66d9ef>private</span> <span style=color:#66d9ef>readonly</span> IParallelLooper _parallelLooper;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>   <span style=color:#66d9ef>public</span> ParallelNumberIncrementor(IParallelLooper parallelLooper)
+</span></span><span style=display:flex><span>   {
+</span></span><span style=display:flex><span>      _parallelLooper = parallelLooper
+</span></span><span style=display:flex><span>   }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>   <span style=color:#66d9ef>internal</span> <span style=color:#66d9ef>int</span>[] Increment(<span style=color:#66d9ef>int</span>[] input)
+</span></span><span style=display:flex><span>   {
+</span></span><span style=display:flex><span>      <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>new</span> <span style=color:#66d9ef>int</span>[<span style=color:#ae81ff>0</span>];
+</span></span><span style=display:flex><span>   }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>The skeleton is in place. This will build but will fail all the tests as it&rsquo;s doing the minimal thing that&rsquo;s required just to build (I prefer to not use null objects in place of collections but this is another topic altogether). We can delegate parallelism to the ParallelLooper and deal with the logic that outputs an array in the desired order. As our unit tests have to be deterministic, i.e. take the system under test from a precondition to post-assertion consistently with each run, we can fake the order the output elements are finished being produced. Then it will be the <code>ParallelLooper</code>&rsquo;s responsibility to reorder these elements.</p><p>Let&rsquo;s rewrite the first test but with a <code>ParallelLooper</code>.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-csharp data-lang=csharp><span style=display:flex><span><span style=color:#a6e22e>[Test]</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>void</span> Increment_WhenElementProcessingFinishesInOrder_OutputElementsAppearInOrder()
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>   <span style=color:#66d9ef>var</span> parallelLooper = <span style=color:#66d9ef>new</span> Mock&lt;IParallelLooper&gt;();
+</span></span><span style=display:flex><span>   parallelLooper.Setup(x =&gt; x.ForEach(It.IsAny&lt;IEnumerable&lt;<span style=color:#66d9ef>int</span>&gt;&gt;(), It.IsAny&lt;Action&lt;<span style=color:#66d9ef>int</span>, ParallelLoopState, <span style=color:#66d9ef>long</span>&gt;&gt;()))
+</span></span><span style=display:flex><span>       .Callback&lt;IEnumerable&lt;<span style=color:#66d9ef>int</span>&gt;, Action&lt;<span style=color:#66d9ef>int</span>, ParallelLoopState, <span style=color:#66d9ef>long</span>&gt;&gt;
+</span></span><span style=display:flex><span>       ((numbers, loopBody) =&gt;
+</span></span><span style=display:flex><span>       {
+</span></span><span style=display:flex><span>          loopBody.Invoke(numbers.ElementAt(<span style=color:#ae81ff>0</span>), <span style=color:#66d9ef>null</span>, <span style=color:#ae81ff>1</span>);
+</span></span><span style=display:flex><span>          loopBody.Invoke(numbers.ElementAt(<span style=color:#ae81ff>1</span>), <span style=color:#66d9ef>null</span>, <span style=color:#ae81ff>2</span>);
+</span></span><span style=display:flex><span>          loopBody.Invoke(numbers.ElementAt(<span style=color:#ae81ff>2</span>), <span style=color:#66d9ef>null</span>, <span style=color:#ae81ff>3</span>);
+</span></span><span style=display:flex><span>       });
+</span></span><span style=display:flex><span>   <span style=color:#66d9ef>var</span> parallelNumberIncrementor = <span style=color:#66d9ef>new</span> ParallelNumberIncrementor(parallelLooper.Object);
+</span></span><span style=display:flex><span>   <span style=color:#66d9ef>var</span> input = <span style=color:#66d9ef>new</span>[]{ <span style=color:#ae81ff>1</span>, <span style=color:#ae81ff>2</span>, <span style=color:#ae81ff>3</span> };
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>   <span style=color:#66d9ef>var</span> output = parallelNumberIncrementor.Increment(input);
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>   Assert.AreEqual(<span style=color:#66d9ef>new</span>[] { <span style=color:#ae81ff>2</span>, <span style=color:#ae81ff>3</span>, <span style=color:#ae81ff>4</span> }, output);
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>We can mock an <code>IParallelLooper</code> to return the output elements in reverse order and the ParallelNumberIncrementor will be responsible outputting the correct order.</p><p>We can have a design in mind just not be married to it.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-csharp data-lang=csharp><span style=display:flex><span><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>class</span> <span style=color:#a6e22e>ParallelNumberIncrementor</span>
+</span></span><span style=display:flex><span>{
+</span></span><span style=display:flex><span>   <span style=color:#66d9ef>private</span> <span style=color:#66d9ef>readonly</span> IParallelLooper _parallelLooper;
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>   <span style=color:#66d9ef>public</span> ParallelNumberIncrementor(IParallelLooper parallelLooper)
+</span></span><span style=display:flex><span>   {
+</span></span><span style=display:flex><span>      _parallelLooper = parallelLooper
+</span></span><span style=display:flex><span>   }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>   <span style=color:#66d9ef>internal</span> <span style=color:#66d9ef>int</span>[] Increment(<span style=color:#66d9ef>int</span>[] input)
+</span></span><span style=display:flex><span>   {
+</span></span><span style=display:flex><span>      <span style=color:#66d9ef>int</span>[] output = <span style=color:#66d9ef>new</span> <span style=color:#66d9ef>int</span>[input.Length];
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>      _parallelLooper.ForEach(input, (i, state, index) =&gt;
+</span></span><span style=display:flex><span>      {
+</span></span><span style=display:flex><span>         output[index] = i + <span style=color:#ae81ff>1</span>;
+</span></span><span style=display:flex><span>      });
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>      <span style=color:#66d9ef>return</span> output;
+</span></span><span style=display:flex><span>   }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><hr><ul class=pager><li class=previous><a href=/blog/umbraco-6-and-asp-net-web-api/ data-toggle=tooltip data-placement=top title="Umbraco 6 and ASP NET Web API">&larr;
+Previous Post</a></li><li class=next><a href=/blog/jekyll-blog-posts-in-their-own-sub-url/ data-toggle=tooltip data-placement=top title="Jekyll blog posts in their own sub URL">Next
+Post &rarr;</a></li></ul></div><div class="col-lg-2 col-lg-offset-0
+visible-lg-block
+sidebar-container
+catalog-container"><div class=side-catalog><hr class="hidden-sm hidden-xs"><h5><a class=catalog-toggle href=#>Contents</a></h5><ul class=catalog-body></ul></div></div><div class="col-lg-8 col-lg-offset-2
+col-md-10 col-md-offset-1
+sidebar-container"></div></div></div></article><footer><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><ul class="list-inline text-center"><li><a href=https://x.com/michailkonst><span class="fa-stack fa-lg"><i class="fas fa-circle fa-stack-2x"></i>
+<i class="fab fa-twitter fa-stack-1x fa-inverse"></i></span></a></li><li><a target=_blank href=https://github.com/michailkonst><span class="fa-stack fa-lg"><i class="fas fa-circle fa-stack-2x"></i>
+<i class="fab fa-github fa-stack-1x fa-inverse"></i></span></a></li><li><a target=_blank href=https://www.linkedin.com/in/michailkonstant/><span class="fa-stack fa-lg"><i class="fas fa-circle fa-stack-2x"></i>
+<i class="fab fa-linkedin fa-stack-1x fa-inverse"></i></span></a></li></ul><p class="copyright text-muted">Copyright &copy; Michail Konst 2025</p></div></div></div></footer><script>function loadAsync(e,t){var s=document,o="script",n=s.createElement(o),i=s.getElementsByTagName(o)[0];n.src=e,t&&n.addEventListener("load",function(e){t(null,e)},!1),i.parentNode.insertBefore(n,i)}</script><script>$("#tag_cloud").length!==0&&loadAsync("/js/jquery.tagcloud.js",function(){$.fn.tagcloud.defaults={color:{start:"#bbbbee",end:"#0085a1"}},$("#tag_cloud a").tagcloud()})</script><script>loadAsync("https://cdn.jsdelivr.net/npm/fastclick@1.0.6/lib/fastclick.min.js",function(){var e=document.querySelector("nav");e&&FastClick.attach(e)})</script><script type=text/javascript>function generateCatalog(e){_containerSelector="div.post-container";var t,n,s,o,i,a=$(_containerSelector),r=a.find("h1,h2,h3,h4,h5,h6");return $(e).html(""),r.each(function(){n=$(this).prop("tagName").toLowerCase(),o="#"+$(this).prop("id"),t=$(this).text(),i=$('<a href="'+o+'" rel="nofollow" title="'+t+'">'+t+"</a>"),s=$('<li class="'+n+'_nav"></li>').append(i),$(e).append(s)}),!0}generateCatalog(".catalog-body"),$(".catalog-toggle").click(function(e){e.preventDefault(),$(".side-catalog").toggleClass("fold")}),loadAsync("/js/jquery.nav.js",function(){$(".catalog-body").onePageNav({currentClass:"active",changeHash:!1,easing:"swing",filter:"",scrollSpeed:700,scrollOffset:0,scrollThreshold:.2,begin:null,end:null,scrollChange:null,padding:80})})</script></body></html>

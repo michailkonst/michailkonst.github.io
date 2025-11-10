@@ -1,0 +1,69 @@
+<!doctype html><html lang=en-au><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1"><meta property="og:site_name" content="Michail Konst"><meta property="og:type" content="article"><meta property="og:image" content="https://www.michailkonst.com//img/home.jpg"><meta property="twitter:image" content="https://www.michailkonst.com//img/home.jpg"><meta name=title content="Writing a Novel With Visual Studio Code"><meta property="og:title" content="Writing a Novel With Visual Studio Code"><meta property="twitter:title" content="Writing a Novel With Visual Studio Code"><meta name=description content><meta property="og:description" content><meta property="twitter:description" content><meta property="og:url" content="https://www.michailkonst.com/blog/writing-a-novel-with-visual-studio-code/"><meta property="twitter:card" content="Discover how to use Visual Studio Code as a powerful tool for writing and organising your novel, with tips to enhance your creative writing process."><meta name=keyword content><link rel="shortcut icon" href=/img/favicon.ico><title>Writing a Novel With Visual Studio Code | </title><link rel=canonical href=/blog/writing-a-novel-with-visual-studio-code/><link rel=stylesheet href=/css/bootstrap.min.css><link rel=stylesheet href=/css/hugo-theme-cleanwhite.min.css><link rel=stylesheet href=/css/zanshang.min.css><link rel=stylesheet href=/css/font-awesome.all.min.css><link rel=stylesheet href=https://www.michailkonst.com/css/custom.css><script src=/js/jquery.min.js></script><script src=/js/bootstrap.min.js></script><script src=/js/hux-blog.min.js></script><script src=/js/lazysizes.min.js></script></head><nav class="navbar navbar-default navbar-custom navbar-fixed-top"><div class=container-fluid><div class="navbar-header page-scroll"><button type=button class=navbar-toggle>
+<span class=sr-only>Toggle navigation</span>
+<span class=icon-bar></span>
+<span class=icon-bar></span>
+<span class=icon-bar></span>
+</button>
+<a class=navbar-brand href=/>Michail Konst</a></div><div id=huxblog_navbar><div class=navbar-collapse><ul class="nav navbar-nav navbar-right"><li><a href=/>All Posts</a></li><li><a href=/about//>ABOUT</a></li><li><a href=/search><i class="fa fa-search"></i></a></li></ul></div></div></div></nav><script>var $body=document.body,$toggle=document.querySelector(".navbar-toggle"),$navbar=document.querySelector("#huxblog_navbar"),$collapse=document.querySelector(".navbar-collapse");$toggle.addEventListener("click",handleMagic);function handleMagic(){$navbar.className.indexOf("in")>0?($navbar.className=" ",setTimeout(function(){$navbar.className.indexOf("in")<0&&($collapse.style.height="0px")},400)):($collapse.style.height="auto",$navbar.className+=" in")}</script><style type=text/css>header.intro-header{background-image:url(/img/home.jpg)}</style><header class=intro-header><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><div class=post-heading><div class=tags></div><h1>Writing a Novel With Visual Studio Code</h1><h2 class=subheading></h2><span class=meta>Posted by
+Michail Konst
+on
+Tuesday, September 19, 2023</span></div></div></div></div></header><article><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2
+col-md-10 col-md-offset-1
+post-container"><p>If you&rsquo;re a software developer who also loves to indulge in novel writing, you might be intrigued to discover that you don&rsquo;t necessarily need a specialised writing tool. Visual Studio Code, the versatile code editor, can prove to be a surprisingly effective ally in your creative writing endeavours. Let&rsquo;s delve into how Visual Studio Code can enhance your novel-writing experience.</p><p>I&rsquo;ve explored various writing tools in my quest for one that fits my writing style. I started with Microsoft Word and Google Docs, but I found them lacking when it came to providing a comprehensive view of my narrative structure while keeping the main writing pane front and centre. Then, I briefly ventured into Scrivener, a renowned tool for novelists, but I discovered it was packed with features I didn&rsquo;t necessarily need or want.</p><p>Visual Studio Code comes to the rescue, offering a range of features that make it a powerful tool for novelists right out of the box:</p><p><strong>Markdown Support</strong>
+Visual Studio Code seamlessly supports Markdown, a lightweight markup language that allows you to structure your novel with ease. Markdown enables you to incorporate formatting, headers, links, and more into your writing.</p><p><strong>Organised Folders</strong>
+Just as you would organise your code projects, you can structure your novel in Visual Studio Code. You can create folders to manage various aspects of your writing project, such as character notes, research findings, templates, plot outlines, character dialogues, and more. Maintain a structured hierarchy to keep your work organised.</p><p><img src=vscode_novel.jpg alt></p><p>The folder structure doesn&rsquo;t need to follow a specific format as long as the files and folders are in alphabetical order. One example is as follows:</p><pre tabindex=0><code>└───_Manuscript
+    ├───Act 1
+    │   ├───Chapter 1
+    │   │       scene1.md
+    │   │       scene2.md
+    │   │       scene3.md
+    │   │
+    │   ├───Chapter 2
+    │   │       scene1.md
+    │   │       scene2.md
+    │   │
+    │   └───Chapter 3
+    │           scene1.md
+    ├───Act 2
+    │   │ 
+    │   ├───Chapter 4
+    │   │       scene1.md
+    │   │       scene2.md
+    │   │
+    │   ├───Chapter 5
+    │   │       scene1.md
+    │   │       scene2.md
+    │   │
+    │   └───Chapter 6
+    │           scene1.md
+    └───Act 3
+        ├───Chapter 7
+        │       scene1.md
+        │
+        ├───Chapter 8
+        │       scene1.md
+        │
+        ├───Chapter 9
+        │       scene1.md
+        │       scene2.md
+        │
+        └───Chapter 10
+                scene1.md
+</code></pre><p><strong>Version Control</strong>
+You can leverage the graphical user interface of your preferred version control system to compare files side by side and maintain a comprehensive history of your novel. In many version control systems, you have the option to tag commits / check-ins, allowing you to assign them a version number. For example, you might have a two-part version number, allocating the major number to represent your draft&rsquo;s version and the minor number for revisions. This approach also enables you to keep track of the specific versions you share with your editor and others that you share your drafts with.</p><p><strong>Pandoc</strong>
+To transform your document into a Word document, you can utilise <a href=https://pandoc.org/>Pandoc</a>, a utility designed for converting from one document format to another. Pandoc can take your Markdown files, be they chapters or individual scenes, and compile them into a cohesive manuscript.</p><p>With Pandoc, you can customise the appearance of your manuscript to your specifications. By providing Pandoc with a custom reference Word document, you can control fonts and page borders. You can also denote when to break the page for new chapters. I use Word&rsquo;s &ldquo;Heading 1&rdquo; style to start my chapters with, and have customised the &ldquo;Heading 1&rdquo; style to start with a page break. By default, Pandoc converts Markdown headings into Word headings and displays them accordingly in the resulting Word document. Therefore, when it encounters a single hash symbol in the text, it applies Word&rsquo;s &ldquo;Heading 1&rdquo; style, resulting in a page break.</p><p>For reference, a typical Pandoc invocation using a reference document looks like this:</p><pre tabindex=0><code>pandoc combined.md --reference-doc=your-reference-file.docx -o your-novel.docx
+</code></pre><p>I&rsquo;ve also written a <a href=https://github.com/michailkonst/New-Manuscript/>custom sctipt</a> that compiles a list of markdown files in your manuscript location in alphabetical order and then feed that list to pandoc. It also injects a scene separator between scenes but not if it detects a chapter (a chapter is marked by one hash, which is Heading 1 in markdown, which I reserve for denoting a new chapter in the manuscript). Plus, it also takes care of versioning your work by tagging your commits (works with Git only).</p><h2 id=drawbacks>Drawbacks</h2><p>While Visual Studio Code can be a powerful ally for novel writers, it&rsquo;s important to acknowledge some drawbacks:</p><p><strong>Lack of Specialised Writing Tools</strong>
+Unlike dedicated writing software like Scrivener, Visual Studio Code doesn&rsquo;t offer specialised tools for novelists, such as character and plot management or storyboarding.</p><p><strong>No Mobile Support</strong>
+Visual Studio Code is a desktop application for writing code, and there is no version available for Android or iOS devices, limiting your writing flexibility on mobile platforms.</p><p><strong>No Built-in Proofreading</strong>
+Visual Studio Code lacks built-in proofreading features. You would need to copy and paste your text into external tools like Grammarly for grammar and spell checking.</p><p><strong>No Pandoc Support for Mobile</strong>
+Pandoc is a command-line utility for converting document formats, and it isn&rsquo;t commonly available as a mobile application.</p><p>Visual Studio Code, equipped with its native support for Markdown, folder structuring reminiscent of coding projects, tapping into version control and command-line tools, stands as a powerful and highly adaptable tool for writers who also have a technical background. Nevertheless, it&rsquo;s crucial to carefully evaluate the benefits and drawbacks while keeping your unique writing requirements and preferences in mind.</p><hr><ul class=pager><li class=previous><a href=/blog/newrelic-agent-apline-docker-container/ data-toggle=tooltip data-placement=top title="Installing the NewRelic .NET agent on an Alpine Docker image">&larr;
+Previous Post</a></li><li class=next><a href=/blog/publisling-jekyll-site-to-a-separate-github-pages/ data-toggle=tooltip data-placement=top title="Publishing a Jekyll site to a separate Github Pages repository using Github Actions">Next
+Post &rarr;</a></li></ul></div><div class="col-lg-2 col-lg-offset-0
+visible-lg-block
+sidebar-container
+catalog-container"><div class=side-catalog><hr class="hidden-sm hidden-xs"><h5><a class=catalog-toggle href=#>Contents</a></h5><ul class=catalog-body></ul></div></div><div class="col-lg-8 col-lg-offset-2
+col-md-10 col-md-offset-1
+sidebar-container"></div></div></div></article><footer><div class=container><div class=row><div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1"><ul class="list-inline text-center"><li><a href=https://x.com/michailkonst><span class="fa-stack fa-lg"><i class="fas fa-circle fa-stack-2x"></i>
+<i class="fab fa-twitter fa-stack-1x fa-inverse"></i></span></a></li><li><a target=_blank href=https://github.com/michailkonst><span class="fa-stack fa-lg"><i class="fas fa-circle fa-stack-2x"></i>
+<i class="fab fa-github fa-stack-1x fa-inverse"></i></span></a></li><li><a target=_blank href=https://www.linkedin.com/in/michailkonstant/><span class="fa-stack fa-lg"><i class="fas fa-circle fa-stack-2x"></i>
+<i class="fab fa-linkedin fa-stack-1x fa-inverse"></i></span></a></li></ul><p class="copyright text-muted">Copyright &copy; Michail Konst 2025</p></div></div></div></footer><script>function loadAsync(e,t){var s=document,o="script",n=s.createElement(o),i=s.getElementsByTagName(o)[0];n.src=e,t&&n.addEventListener("load",function(e){t(null,e)},!1),i.parentNode.insertBefore(n,i)}</script><script>$("#tag_cloud").length!==0&&loadAsync("/js/jquery.tagcloud.js",function(){$.fn.tagcloud.defaults={color:{start:"#bbbbee",end:"#0085a1"}},$("#tag_cloud a").tagcloud()})</script><script>loadAsync("https://cdn.jsdelivr.net/npm/fastclick@1.0.6/lib/fastclick.min.js",function(){var e=document.querySelector("nav");e&&FastClick.attach(e)})</script><script type=text/javascript>function generateCatalog(e){_containerSelector="div.post-container";var t,n,s,o,i,a=$(_containerSelector),r=a.find("h1,h2,h3,h4,h5,h6");return $(e).html(""),r.each(function(){n=$(this).prop("tagName").toLowerCase(),o="#"+$(this).prop("id"),t=$(this).text(),i=$('<a href="'+o+'" rel="nofollow" title="'+t+'">'+t+"</a>"),s=$('<li class="'+n+'_nav"></li>').append(i),$(e).append(s)}),!0}generateCatalog(".catalog-body"),$(".catalog-toggle").click(function(e){e.preventDefault(),$(".side-catalog").toggleClass("fold")}),loadAsync("/js/jquery.nav.js",function(){$(".catalog-body").onePageNav({currentClass:"active",changeHash:!1,easing:"swing",filter:"",scrollSpeed:700,scrollOffset:0,scrollThreshold:.2,begin:null,end:null,scrollChange:null,padding:80})})</script></body></html>
